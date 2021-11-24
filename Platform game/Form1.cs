@@ -17,7 +17,10 @@ namespace Platform_game
         int JumpSpeed;
         int force;
         int Score = 0;
-        int PlayerSpeed = 10;
+        int PlayerSpeed = 6;
+
+        private int move;
+
        
 
         public Form1()
@@ -27,8 +30,9 @@ namespace Platform_game
 
         private void MainGameTimerEvent(object sender, EventArgs e)
         {
+            
 
-            Player.Top += JumpSpeed;
+        Player.Top += JumpSpeed;
             
             if(goLeft == true)
             {
@@ -49,33 +53,100 @@ namespace Platform_game
             if(jumping == true)
             {
                 JumpSpeed -= 7;
-                force -= 2;
+                force -= 3;
             }
 
             else
             {
-                JumpSpeed = 15;
+                JumpSpeed = 10;
             }
 
             
 
             foreach(Control x in this.Controls)
             {
-                 
-                if(x is PictureBox)
+
+
+                
+                if (x is PictureBox)
                 {
-                    if((string)x.Tag == "platform")
+
+                    if ((string)x.Tag == "platform")
                     {
                         if(Player.Bounds.IntersectsWith(x.Bounds))
                         {
-                            
-                            force = 8;
+                            force = 15;
                             Player.Top = x.Top - Player.Height;
-
                         }
 
                         x.BringToFront();
                     }
+
+                    if (goRight == true)
+                    {
+                        int move = 400;
+
+                        //Verschiebung von Welt
+                        if (Player.Left > move)
+                        {
+
+
+                            Platform.Left -= 1;
+                            Object.Left -= 8;
+                            ObjectUp.Left -= 8;
+                        }
+
+                        //Erzeugung von Welt
+                        if (Object.Left < -250)
+                        {
+                            Object.Left = +1200;
+
+                            if (ObjectUp.Left < -250)
+                            {
+                                ObjectUp.Left = +1600;
+
+                            }
+
+                        }
+                    }
+
+
+                    if (goLeft == true)
+                    {
+
+                        int move = 0;
+
+                        //Verschiebung von Welt
+                        if (Player.Left > move)
+                        {
+
+
+                            Platform.Left += 1;
+                            Object.Left += 8;
+                            ObjectUp.Left += 8;
+                        }
+
+                        //Erzeugung von Welt
+                        if (Object.Left < +500)
+                        {
+                            Object.Left = -1200;
+
+                            if (ObjectUp.Left < +500)
+                            {
+                                ObjectUp.Left = -1600;
+
+                            }
+
+
+                        }
+
+                    }
+                        
+                   
+
+
+
+
 
                     if ((string)x.Tag == "platformFront")
                     {
@@ -87,11 +158,19 @@ namespace Platform_game
                         x.BringToFront();
                     }
 
+                    if ((string)x.Tag == "platformUp")
+                    {
+                        if (Player.Bounds.IntersectsWith(x.Bounds))
+                        {
+                            force = 15;
+                            Player.Top = x.Top - Player.Height;
+                        }
+                        x.BringToFront();
+                    }
+
+
                 }
-                if (Player.Left < -150)
-                {
-                    Platform.Left += 800;
-                }
+                
 
             }
             
@@ -115,8 +194,15 @@ namespace Platform_game
             {
                 jumping = true; 
             }
+            if (e.KeyCode == Keys.S)
+            {
+                Player.Height -= 50;
+            }
+        
 
         }
+
+
 
         private void KeyIsUp(object sender, KeyEventArgs e)
         {
@@ -139,6 +225,10 @@ namespace Platform_game
                 RestartGame();
             }
 
+            if(e.KeyCode == Keys.S)
+            {
+                Player.Height = 75;
+            }
 
         }
 
@@ -153,15 +243,18 @@ namespace Platform_game
             Convert.ToString(Score);
 
             txtScore.Text = "Score" + Score;
-
-            foreach(Control x in this.Controls)
-                if(x is PictureBox && x.Visible == false)
+        
+            foreach (Control x in this.Controls)
+                if (x is PictureBox && x.Visible == false)
                 {
                     x.Visible = true;
                 }
-
-            Player.Left = 12;
+        
+            Player.Left = 10;
             Player.Top = 335;
+            Platform.Width = 3000;
+
+            
 
             GameTimer.Start();
 
